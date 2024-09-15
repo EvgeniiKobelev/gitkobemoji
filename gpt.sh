@@ -154,6 +154,7 @@ generate_message() {
 
   get_diff_content
 
+
   # Prepare the data for the API call
   SYSTEM_PROMPT="You are a system that generates git commit messages from diff.
   You will be given a diff and your task is to generate a git commit message.
