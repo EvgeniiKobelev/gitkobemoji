@@ -160,10 +160,7 @@ generate_message() {
   You will provide only one commit message for each diff.
   Your answer should contain only single commit message, nothing else.
   Use english language only.
-  Use a maximum of 100 words in the response.
-  Limit the first sentence (up to the first period) to 60 characters.
-  Add a line break after the first sentence (after the first period).
-  Limit the first line to 72 characters for better readability.
+  Use a maximum of 72 characters in the response.
   Do not add any extra newlines or spaces at the beginning or end of the message.
   "
 
@@ -199,7 +196,7 @@ generate_message() {
 ${GPT_MESSAGE}"
   fi
   
-  
+
 RESULT=$(echo "${MESSAGE}" | sed -e '0,/\. /s//.\n\n/' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
   BEGIN { line_length = 0; max_length = 72 }
   {
