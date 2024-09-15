@@ -197,27 +197,7 @@ ${GPT_MESSAGE}"
   fi
   
 
-RESULT=$(echo "${MESSAGE}" | sed -e '0,/\. /s//.\n\n/' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
-  BEGIN { line_length = 0; max_length = 72 }
-  {
-    for (i = 1; i <= NF; i++) {
-      word_length = length($i)
-      if (line_length + word_length + 1 > max_length && NR > 1) {
-        print ""
-        line_length = 0
-      }
-      if (line_length > 0) {
-        printf " "
-        line_length++
-      }
-      printf "%s", $i
-      line_length += word_length
-    }
-    if (NR == 1) print ""
-    else printf "\n"
-    line_length = 0
-  }
-')
+RESULT=$(echo "${MESSAGE}" | tr -d '\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' ')
 }
 
 generate_emoji() {
