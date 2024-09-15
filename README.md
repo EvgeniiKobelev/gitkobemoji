@@ -1,48 +1,48 @@
-# GITPMOJI
+# GITKOBEMOJI
 ========
 
-Enhanced Git commits using AI
------------------------------
+Улучшенные Git-коммиты с использованием ИИ
+------------------------------------------
 
-GITPMOJI is a powerful AI-driven tool designed to enhance your Git workflow. It offers several key features:
+GITKOBEMOJI - это мощный инструмент на базе ИИ, разработанный для улучшения вашего рабочего процесса с Git. Он предлагает несколько ключевых функций:
 
-1. Commit Message Generation: Analyzes your code changes (diff) and generates comprehensive commit messages, providing detailed context for each commit.
+1. Генерация сообщений коммитов: Анализирует изменения в вашем коде (diff) и генерирует подробные сообщения коммитов, предоставляя детальный контекст для каждого коммита.
 
-2. Code Change Evaluation: Assesses the impact and quality of your code changes, offering insights into the modifications made.
+2. Оценка изменений кода: Оценивает влияние и качество ваших изменений в коде, предлагая инсайты о внесенных модификациях.
 
-3. Emoji Decoration: Automatically adds relevant emojis to your commits, providing visual cues that make it easier to understand the nature of each change at a glance.
+3. Украшение эмодзи: Автоматически добавляет релевантные эмодзи к вашим коммитам, предоставляя визуальные подсказки, которые облегчают понимание характера каждого изменения с первого взгляда.
 
-This multi-functional approach transforms your commit history into a more informative, insightful, and visually appealing log of your project's development. By leveraging AI to generate, evaluate, and decorate your commits, GITPMOJI helps maintain a clear and meaningful record of your project's evolution.
+Этот многофункциональный подход превращает историю ваших коммитов в более информативный, содержательный и визуально привлекательный журнал разработки вашего проекта. Используя ИИ для генерации, оценки и украшения ваших коммитов, GITKOBEMOJI помогает поддерживать четкую и осмысленную запись эволюции вашего проекта.
 
-## How It Works
+## Как это работает
 
-1. When you make a commit, GITPMOJI intercepts the commit message using a Git hook. So it works with all git clients and IDEs that use git hooks.
-2. The commit message and diff are sent to a custom script (`gpt.sh`) that communicates with the OpenAI API.
-3. The API, using the GPT-4o model, analyzes the commit message and the diff and updates the commit message.
-4. The suggested emoji is prepended to your original commit message.
-5. The AI generates a commit message based on the diff changes added to at the end of the original commit message.
-6. Rating of the commit message is added to the end of the commit message.
-7. The process respects any existing prefix in your commit messages, as defined by the GITPMOJI_PREFIX_RX environment variable.
+1. Когда вы делаете коммит, GITKOBEMOJI перехватывает сообщение коммита с помощью Git-хука. Таким образом, он работает со всеми git-клиентами и IDE, использующими git-хуки.
+2. Сообщение коммита и diff отправляются в пользовательский скрипт (`gpt.sh`), который взаимодействует с API OpenAI.
+3. API, используя модель GPT-4o, анализирует сообщение коммита и diff, и обновляет сообщение коммита.
+4. Предложенный эмодзи добавляется в начало вашего исходного сообщения коммита.
+5. ИИ генерирует сообщение коммита на основе изменений в diff, которое добавляется в конец исходного сообщения коммита.
+6. Рейтинг сообщения коммита добавляется в конец сообщения коммита.
+7. Процесс учитывает любой существующий префикс в ваших сообщениях коммитов, как определено переменной окружения GITKOBEMOJI_PREFIX_RX.
 
-This process happens seamlessly, requiring no additional action from the user after initial setup.
+Этот процесс происходит бесшовно, не требуя дополнительных действий от пользователя после первоначальной настройки.
 
-## How to use
+## Как использовать
 
-1. add ~ to the end of your commit message to let AI update the commit message and add the emoji to it
-2. add ~~ to the end of your commit message to let AI update the commit message based on the diff 
-3. add ~~~ to the end of your commit message to let AI for both update the commit message and add the emoji
-4. add * as the last character of your commit message to let AI add the rating to the end of the commit message
-5. use composition like ~~~* or ~~* or ~* to let AI update the commit accordingly
+1. Добавьте ~ в конец вашего сообщения коммита, чтобы ИИ обновил сообщение коммита и добавил к нему эмодзи.
+2. Добавьте ~~ в конец вашего сообщения коммита, чтобы ИИ обновил сообщение коммита на основе diff.
+3. Добавьте ~~~ в конец вашего сообщения коммита, чтобы ИИ обновил сообщение коммита и добавил эмодзи.
+4. Добавьте * в качестве последнего символа вашего сообщения коммита, чтобы ИИ добавил рейтинг в конец сообщения коммита.
+5. Используйте комбинации, такие как ~~~* или ~~* или ~*, чтобы ИИ обновил коммит соответствующим образом.
 
-## Setup as one liner wizzard
+## Установка с помощью однострочного мастера
 
-Just run :
+Просто выполните:
 
-navigate to your project directory and run:
+Перейдите в директорию вашего проекта и выполните:
 ```
-curl -o install.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh && bash install.sh && rm install.sh
+curl -o install.sh https://raw.githubusercontent.com/EvgeniiKobelev/gitkobemoji/main/install.sh && bash install.sh && rm install.sh
 ```
-and follow the instructions.
+и следуйте инструкциям.
 
 ## Setup manually
 
@@ -60,48 +60,56 @@ apt-get install jq
 - Add environment variables to your `.env` file or create `.gitkobemoji.env` file:
 
 ```
-GITKOBEMOJI_API_KEY=your_openai_api_key
-GITKOBEMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
-GITKOBEMOJI_API_BASE_URL=https://api.openai.com/v1
-GITKOBEMOJI_API_MODEL=gpt-4o
+GITKOBEMOJI_API_BASE_URL="http://localhost:11434/api"
+GITKOBEMOJI_API_MODEL="llama3.1"
 ```
 
 > ❗ Note: 
-> - GITKOBEMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
-> - GITKOBEMOJI_API_MODEL is optional and defaults to gpt-4o
+> - GITKOBEMOJI_API_BASE_URL is optional and defaults to http://localhost:11434/api
+> - GITKOBEMOJI_API_MODEL is optional and defaults to llama3.1
 
-- make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
+- убедитесь, что файлы `prepare-commit-msg.sh` и `gpt.sh` имеют права на выполнение
 
-- rename `prepare-commit-msg.sh` to `prepare-commit-msg`
+- переименуйте `prepare-commit-msg.sh` в `prepare-commit-msg`
 
-- put `prepare-commit-msg`, `gpt.sh` and `.gitkobemoji.env` into `.git/hooks/`
+- поместите `prepare-commit-msg`, `gpt.sh` и `.gitkobemoji.env` в `.git/hooks/`
 
 ## Usage
 
-Simply write your commit messages as usual. GITPMOJI will automatically add relevant emojis to your commits.
+Просто пишите свои сообщения коммитов как обычно. GITKOBEMOJI автоматически добавит соответствующие эмодзи к вашим коммитам.
 
 ## Examples
 
-Check out the [commit messages](https://github.com/Fl0p/gitpmoji/commits/main/) in this repo
+Check out the [commit messages](https://github.com/EvgeniiKobelev/gitkobemoji/commits/main/) in this repo
 
-![Screenshot 2024-08-22 at 11 43 32](https://github.com/user-attachments/assets/f69ff571-e304-41c1-baec-7d53219bd756)
+## Установка и запуск Ollama 3.1 на локальном компьютере
 
-```
-🩹️ typos fix. fix tilda removing~
-📝 Update README.md to provide a more comprehensive description of GITPMOJI features
-🩹 fix emoji placement
-⚰️ Remove redundant echo
-♻️ Update with commit message generation
-🔧 Add Prefix support and .env file
-➕ Add some predefined Emojis
-🛠️ Refacroring GPT script
-```
+Для использования GITKOBEMOJI с локальной моделью Ollama 3.1, выполните следующие шаги:
 
-## Contributing
+1. Установите Ollama:
+   - Для macOS:
+     ```
+     brew install ollama
+     ```
+   - Для Linux:
+     ```
+     curl -fsSL https://ollama.com/install.sh | sh
+     ```
 
-(Add contribution guidelines here)
+2. Запустите Ollama:
+   ```
+   ollama serve
+   ```
 
-## License
+3. Загрузите модель (например, llama2):
+   ```
+   ollama pull llama3.1
+   ```
 
-[LICENSE](LICENSE)
+4. Обновите переменную окружения в вашем файле `.gitkobemoji.env`:
+   ```
+   GITKOBEMOJI_API_BASE_URL="http://localhost:11434/api"
+   GITKOBEMOJI_API_MODEL="llama3.1"
+   ```
 
+5. Теперь GITKOBEMOJI будет использовать локальную модель Ollama вместо OpenAI API.
