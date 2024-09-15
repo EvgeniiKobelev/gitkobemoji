@@ -154,17 +154,15 @@ generate_message() {
 
   get_diff_content
 
-  # Prepare the data for the API call
+  # Prepare data for API request
   SYSTEM_PROMPT="You are a system that generates git commit messages from diff.
-  You will be given a diff and your task is to generate a git commit message.
-  You will provide only one commit message for each diff.
-  Your answer should contain only single commit message, nothing else.
-  Use english language only.
-  Use multiple lines for the response.
-  Try to use maximum 100 words in the response.
-  "
+  Your task is to create a short commit title (no more than 50 characters) and a separate, more detailed description.
+  Your answer should be in the following format:
+  <title>
 
-  PREFIX_RX="\"" 
+  <description>
+  Use English language only.
+  The maximum length for the description is 100 words."
 
   JSON='{
     "model": $api_model,
@@ -186,15 +184,30 @@ generate_message() {
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
-  # Extract and display the answer
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n')
+  # Extract and process the answer
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
+  # Split title and description
+  TITLE=$(echo "$GPT_MESSAGE" | sed -n '1p' | tr -d '\n')
+  DESCRIPTION=$(echo "$GPT_MESSAGE" | sed '1d' | sed '/./,$!d' | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+
   if [ -z "$MESSAGE" ]; then
-    MESSAGE=$(echo -e "${GPT_MESSAGE}" | tr -d '\n')
+    MESSAGE="$TITLE"
+    if [ ! -z "$DESCRIPTION" ]; then
+      MESSAGE="$MESSAGE
+
+$DESCRIPTION"
+    fi
   else
-    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}" | tr -d '\n')
+    MESSAGE="$MESSAGE $TITLE"
+    if [ ! -z "$DESCRIPTION" ]; then
+      MESSAGE="$MESSAGE
+
+$DESCRIPTION"
+    fi
   fi
-  RESULT=$(echo -e "${MESSAGE}" | tr -d '\n')
+
+  RESULT="$MESSAGE"
 }
 
 generate_emoji() {
@@ -274,8 +287,6 @@ generate_emoji() {
   | 🧱 | Infrastructure changes. |
   | 🧑‍💻 | Improve developer experience. |
   "
-
-  PREFIX_RX="\"" 
 
   JSON='{
     "model": $api_model,
