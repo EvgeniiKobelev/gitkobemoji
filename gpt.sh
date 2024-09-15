@@ -163,6 +163,7 @@ generate_message() {
   Use a maximum of 100 words in the response.
   Add a line break after the first sentence (after the first period).
   Limit the first line to 72 characters for better readability.
+  Do not add any extra newlines or spaces at the beginning or end of the message.
   "
 
   PREFIX_RX="\"" 
@@ -191,11 +192,21 @@ generate_message() {
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
   if [ -z "$MESSAGE" ]; then
-    MESSAGE=$(echo -e "${GPT_MESSAGE}" | sed 's/\. /.\n/')
+    MESSAGE="${GPT_MESSAGE}"
   else
-    MESSAGE=$(echo -e "${MESSAGE}\n${GPT_MESSAGE}" | sed 's/\. /.\n/')
+    MESSAGE="${MESSAGE}
+${GPT_MESSAGE}"
   fi
-  RESULT=$(echo -e "${MESSAGE}" | sed -e 's/^ *//g' -e 's/ *$//g' -e '/^$/d')
+  
+  # Обработка сообщения
+  RESULT=$(echo "${MESSAGE}" | awk '{
+    if (NR==1) {
+      printf "%s\n", $0
+    } else {
+      printf "%s", $0
+      if (NR % 2 == 0) printf "\n"
+    }
+  }' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d')
 }
 
 generate_emoji() {
