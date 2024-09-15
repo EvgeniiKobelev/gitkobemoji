@@ -187,14 +187,14 @@ generate_message() {
                   -d "$DATA")
 
   # Extract and display the answer
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n')
   
   if [ -z "$MESSAGE" ]; then
-    MESSAGE=$(echo -e "${GPT_MESSAGE}")
+    MESSAGE=$(echo -e "${GPT_MESSAGE}" | tr -d '\n')
   else
-    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}")
+    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}" | tr -d '\n')
   fi
-  RESULT=$(echo -e "${MESSAGE}")
+  RESULT=$(echo -e "${MESSAGE}" | tr -d '\n')
 }
 
 generate_emoji() {
@@ -298,7 +298,7 @@ generate_emoji() {
                   -d "$DATA")
 
   # Extract and display the answer
-  EMOJI=$(echo $RESPONSE | jq -r '.message.content')
+  EMOJI=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n')
 
   PREFIX="###"
 
@@ -310,7 +310,7 @@ generate_emoji() {
       PREFIX=$GITKOBEMOJI_PREFIX_RX
   fi
 
-  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
+  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/" | tr -d '\n')
 }
 
 assess_diff() {
