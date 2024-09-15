@@ -154,15 +154,17 @@ generate_message() {
 
   get_diff_content
 
-  # Prepare data for API request
+  # Prepare the data for the API call
   SYSTEM_PROMPT="You are a system that generates git commit messages from diff.
-  Your task is to create a short commit title (no more than 50 characters) and a separate, more detailed description.
-  Your answer should be in the following format:
-  <title>
+  You will be given a diff and your task is to generate a git commit message.
+  You will provide only one commit message for each diff.
+  Your answer should contain only single commit message, nothing else.
+  Use english language only.
+  Use multiple lines for the response.
+  Try to use maximum 100 words in the response.
+  "
 
-  <description>
-  Use English language only.
-  The maximum length for the description is 100 words."
+  PREFIX_RX="\"" 
 
   JSON='{
     "model": $api_model,
@@ -184,30 +186,15 @@ generate_message() {
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
-  # Extract and process the answer
+  # Extract and display the answer
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
-  # Split title and description
-  TITLE=$(echo "$GPT_MESSAGE" | sed -n '1p' | tr -d '\n')
-  DESCRIPTION=$(echo "$GPT_MESSAGE" | sed '1d' | sed '/./,$!d' | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}')
-
   if [ -z "$MESSAGE" ]; then
-    MESSAGE="$TITLE"
-    if [ ! -z "$DESCRIPTION" ]; then
-      MESSAGE="$MESSAGE
-
-$DESCRIPTION"
-    fi
+    MESSAGE=$(echo -e "${GPT_MESSAGE}")
   else
-    MESSAGE="$MESSAGE $TITLE"
-    if [ ! -z "$DESCRIPTION" ]; then
-      MESSAGE="$MESSAGE
-
-$DESCRIPTION"
-    fi
+    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}")
   fi
-
-  RESULT="$MESSAGE"
+  RESULT=$(echo -e "${MESSAGE}")
 }
 
 generate_emoji() {
@@ -288,6 +275,8 @@ generate_emoji() {
   | 🧑‍💻 | Improve developer experience. |
   "
 
+  PREFIX_RX="\"" 
+
   JSON='{
     "model": $api_model,
     "messages": [
@@ -309,7 +298,7 @@ generate_emoji() {
                   -d "$DATA")
 
   # Extract and display the answer
-  EMOJI=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n')
+  EMOJI=$(echo $RESPONSE | jq -r '.message.content')
 
   PREFIX="###"
 
@@ -321,7 +310,7 @@ generate_emoji() {
       PREFIX=$GITKOBEMOJI_PREFIX_RX
   fi
 
-  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/" | tr -d '\n')
+  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 }
 
 assess_diff() {
