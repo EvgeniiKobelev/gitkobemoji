@@ -199,6 +199,7 @@ generate_message() {
 ${GPT_MESSAGE}"
   fi
   
+  
 RESULT=$(echo "${MESSAGE}" | sed -e '0,/\. /s//.\n\n/' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
   BEGIN { line_length = 0; max_length = 72 }
   {
