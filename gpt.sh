@@ -193,9 +193,9 @@ generate_message() {
   if [ -z "$MESSAGE" ]; then
     MESSAGE=$(echo -e "${GPT_MESSAGE}" | sed 's/\. /.\n/')
   else
-    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}" | sed 's/\. /.\n/')
+    MESSAGE=$(echo -e "${MESSAGE}\n${GPT_MESSAGE}" | sed 's/\. /.\n/')
   fi
-  RESULT=$(echo -e "${MESSAGE}")
+  RESULT=$(echo -e "${MESSAGE}" | sed -e 's/^ *//g' -e 's/ *$//g' -e '/^$/d')
 }
 
 generate_emoji() {
