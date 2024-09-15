@@ -57,24 +57,24 @@ apt-get install jq
 
 - download `prepare-commit-msg.sh` and `gpt.sh`
 
-- Add environment variables to your `.env` file or create `.gitpmoji.env` file:
+- Add environment variables to your `.env` file or create `.gitkobemoji.env` file:
 
 ```
-GITPMOJI_API_KEY=your_openai_api_key
-GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
-GITPMOJI_API_BASE_URL=https://api.openai.com/v1
-GITPMOJI_API_MODEL=gpt-4o
+GITKOBEMOJI_API_KEY=your_openai_api_key
+GITKOBEMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
+GITKOBEMOJI_API_BASE_URL=https://api.openai.com/v1
+GITKOBEMOJI_API_MODEL=gpt-4o
 ```
 
 > ❗ Note: 
-> - GITPMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
-> - GITPMOJI_API_MODEL is optional and defaults to gpt-4o
+> - GITKOBEMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
+> - GITKOBEMOJI_API_MODEL is optional and defaults to gpt-4o
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
 
 - rename `prepare-commit-msg.sh` to `prepare-commit-msg`
 
-- put `prepare-commit-msg`, `gpt.sh` and `.gitpmoji.env` into `.git/hooks/`
+- put `prepare-commit-msg`, `gpt.sh` and `.gitkobemoji.env` into `.git/hooks/`
 
 ## Usage
 

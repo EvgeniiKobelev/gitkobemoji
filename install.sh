@@ -20,18 +20,18 @@ TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 echo "Top level project dir: $TOP_LEVEL_GIT_DIR"
 ls -la $TOP_LEVEL_GIT_DIR
 
-echo "Enter dir name where gitpmoji scripts will be installed. use '.' for current dir. just press enter for default 'gitpmoji'"
-read -p "GITPMOJI_DIR=" GITPMOJI_DIR
+echo "Enter dir name where gitkobemoji scripts will be installed. use '.' for current dir. just press enter for default 'gitkobemoji'"
+read -p "GITKOBEMOJI_DIR=" GITKOBEMOJI_DIR
 
-if [ -z "$GITPMOJI_DIR" ]; then
-    GITPMOJI_DIR="gitpmoji"
+if [ -z "$GITKOBEMOJI_DIR" ]; then
+    GITKOBEMOJI_DIR="gitkobemoji"
 fi
 
-GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
-echo "gitpmoji will be installed in $GITPMOJI_INSTALL_DIR"
+GITKOBEMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITKOBEMOJI_DIR"
+echo "gitkobemoji will be installed in $GITKOBEMOJI_INSTALL_DIR"
 
-mkdir -p $GITPMOJI_INSTALL_DIR
-cd $GITPMOJI_INSTALL_DIR
+mkdir -p $GITKOBEMOJI_INSTALL_DIR
+cd $GITKOBEMOJI_INSTALL_DIR
 pwd
 
 #download from github
@@ -42,67 +42,54 @@ curl -o gpt.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/gpt.sh
 chmod +x prepare-commit-msg.sh
 chmod +x gpt.sh
 
-echo "Do you want to add '$GITPMOJI_DIR' directory to gitignore?  (y/n)"
-read GITPMOJI_ADD_TO_GITIGNORE
+echo "Do you want to add '$GITKOBEMOJI_DIR' directory to gitignore?  (y/n)"
+read GITKOBEMOJI_ADD_TO_GITIGNORE
 
-if [ "$GITPMOJI_ADD_TO_GITIGNORE" = "y" ]; then
+if [ "$GITKOBEMOJI_ADD_TO_GITIGNORE" = "y" ]; then
     echo "" >> $TOP_LEVEL_GIT_DIR/.gitignore
-    echo "# ignore gitpmoji directory" >> $TOP_LEVEL_GIT_DIR/.gitignore
-    echo "$GITPMOJI_DIR" >> $TOP_LEVEL_GIT_DIR/.gitignore
+    echo "# ignore gitkobemoji directory" >> $TOP_LEVEL_GIT_DIR/.gitignore
+    echo "$GITKOBEMOJI_DIR" >> $TOP_LEVEL_GIT_DIR/.gitignore
 fi
 
-#check if .gitpmoji.env exists
-if [ -f .gitpmoji.env ]; then
-    echo "$GITPMOJI_DIR/.gitpmoji.env already exists, skipping setup environment variables"
-    echo "--- start of .gitpmoji.env ---"
-    cat .gitpmoji.env
-    echo "--- end of .gitpmoji.env ---"
+# Удалить запрос API ключа OpenAI
+# Заменить на проверку наличия Ollama
+if ! command -v ollama &> /dev/null
+then
+    echo "Ollama не найдена. Пожалуйста, установите Ollama: https://ollama.ai/"
+    exit 1
+fi
+
+#check if .gitkobemoji.env exists
+if [ -f .gitkobemoji.env ]; then
+    echo "$GITKOBEMOJI_DIR/.gitkobemoji.env уже существует, пропускаем настройку переменных окружения"
+    echo "--- начало .gitkobemoji.env ---"
+    cat .gitkobemoji.env
+    echo "--- конец .gitkobemoji.env ---"
 else
-    echo ".gitpmoji.env does not exist, creating it"
-    echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
-    read -p "GITPMOJI_API_KEY=" api_key
-    echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
-    echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
-    read -p "GITPMOJI_PREFIX_RX=" prefix
-    echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
-    read -p "GITPMOJI_API_BASE_URL=" base_url
-    if [ -z "$base_url" ]; then
-        base_url="https://api.openai.com/v1"
-    fi
-    echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
-    read -p "GITPMOJI_API_MODEL=" model
-    if [ -z "$model" ]; then
-        model="gpt-4o"
-    fi
-
-    echo "GITPMOJI_API_KEY=\"$api_key\""
-    echo "GITPMOJI_PREFIX_RX=\"$prefix\""
-    echo "GITPMOJI_API_BASE_URL=\"$base_url\""
-    echo "GITPMOJI_API_MODEL=\"$model\""
+    echo ".gitkobemoji.env не существует, создаем его"
     
-    cat << EOF > .gitpmoji.env
-# Your api key you can get one here https://platform.openai.com/account/api-keys
-export GITPMOJI_API_KEY="$api_key"
-# Regex for sed command. emoji will be placed after it if found
-export GITPMOJI_PREFIX_RX="$prefix"
-export GITPMOJI_API_BASE_URL="$base_url"
-export GITPMOJI_API_MODEL="$model"
+    cat << EOF > .gitkobemoji.env
+# Базовый URL для локального API Ollama
+export GITKOBEMOJI_API_BASE_URL="http://localhost:11434/api"
+export GITKOBEMOJI_API_MODEL="llama3.1"
 EOF
+
+    echo "Файл .gitkobemoji.env создан с базовым URL для Ollama API и моделью API"
 fi
 
-if [ "$GITPMOJI_ADD_TO_GITIGNORE" != "y" ]; then
-    echo -e "\033[0;31m Do you want to add environment file '$GITPMOJI_DIR/.gitpmoji.env' to .gitignore to keep your API key secret? (y/n)\033[0m"    
-    read GITPMOJI_ADD_ENV_TO_GITIGNORE
-    if [ "$GITPMOJI_ADD_ENV_TO_GITIGNORE" = "y" ]; then
+if [ "$GITKOBEMOJI_ADD_TO_GITIGNORE" != "y" ]; then
+    echo -e "\033[0;31m Do you want to add environment file '$GITKOBEMOJI_DIR/.gitkobemoji.env' to .gitignore to keep your API key secret? (y/n)\033[0m"    
+    read GITKOBEMOJI_ADD_ENV_TO_GITIGNORE
+    if [ "$GITKOBEMOJI_ADD_ENV_TO_GITIGNORE" = "y" ]; then
         echo "" >> $TOP_LEVEL_GIT_DIR/.gitignore
-        echo "# ignore environment file for gitpmoji" >> $TOP_LEVEL_GIT_DIR/.gitignore
-        echo "$GITPMOJI_DIR/.gitpmoji.env" >> $TOP_LEVEL_GIT_DIR/.gitignore
+        echo "# ignore environment file for gitkobemoji" >> $TOP_LEVEL_GIT_DIR/.gitignore
+        echo "$GITKOBEMOJI_DIR/.gitkobemoji.env" >> $TOP_LEVEL_GIT_DIR/.gitignore
     fi
 fi
 
 cd $TOP_LEVEL_GIT_DIR
 
-echo "Gitpmoji files installed in: $GITPMOJI_INSTALL_DIR"
+echo "Gitkobemoji files installed in: $GITKOBEMOJI_INSTALL_DIR"
 
 
 HOOKS_DIR="$TOP_LEVEL_GIT_DIR/.git/hooks"
@@ -135,7 +122,7 @@ relative_path() {
 
 echo "Looking for relative path between:"
 # Get absolute path of gitpmoji install dir
-TARGET="$(cd "$GITPMOJI_INSTALL_DIR"; pwd)"
+TARGET="$(cd "$GITKOBEMOJI_INSTALL_DIR"; pwd)"
 # Get absolute path of the hooks directory
 SOURCE="$(cd "$HOOKS_DIR"; pwd)"
 
@@ -156,7 +143,7 @@ ln -sf $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg
 cd $TOP_LEVEL_GIT_DIR
 
 echo "Git hooks successfully installed"
-echo "You can now commit with gitpmoji. 🚀"
-echo "To uninstall just remove $HOOKS_DIR/prepare-commit-msg and $GITPMOJI_INSTALL_DIR"
+echo "You can now commit with gitkobemoji. 🚀"
+echo "To uninstall just remove $HOOKS_DIR/prepare-commit-msg and $GITKOBEMOJI_INSTALL_DIR"
 
 exit 0

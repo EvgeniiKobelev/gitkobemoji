@@ -6,20 +6,13 @@
 cd "$(dirname "$0")"
 
 #load from env variable
-if [ -f .gitpmoji.env ]; then
-    source .gitpmoji.env
+if [ -f .gitkobemoji.env ]; then
+    source .gitkobemoji.env
 fi
 
 # load from env variable
-API_KEY=$GITPMOJI_API_KEY
-API_BASE_URL=${GITPMOJI_API_BASE_URL:-https://api.openai.com/v1}
-API_MODEL=${GITPMOJI_API_MODEL:-gpt-4o}
-
-# check if API_KEY is set
-if [ -z "$API_KEY" ]; then
-    echo "GITPMOJI_API_KEY is not set"
-    exit 1
-fi
+API_BASE_URL=${GITKOBEMOJI_API_BASE_URL:-http://localhost:11434/api}
+API_MODEL=${GITKOBEMOJI_API_MODEL:-llama3.1}
 
 # check if jq is installed
 if ! command -v jq &> /dev/null
@@ -175,35 +168,20 @@ generate_message() {
 
   JSON='{
     "model": $api_model,
-    "messages": [
-      {
-        "role": "system",
-        "content": $system_prompt
-      },
-      {
-        "role": "user",
-        "content": $prompt
-      }
-    ],
-    "max_tokens": 200,
-    "temperature": 0.999,
-    "top_p": 1,
-    "frequency_penalty": 0.0,
-    "presence_penalty": 0.0
+    "prompt": $prompt
   }'
 
   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/chat/completions" \
+                  -X POST "$API_BASE_URL/generate" \
                   -H "Content-Type: application/json" \
-                  -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
   # Extract and display the answer
   # echo $RESPONSE
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.response')
   
   if [ -z "$MESSAGE" ]; then
     MESSAGE=$(echo -e "${GPT_MESSAGE}")
@@ -295,43 +273,28 @@ generate_emoji() {
 
   JSON='{
     "model": $api_model,
-    "messages": [
-      {
-        "role": "system",
-        "content": $system_prompt
-      },
-      {
-        "role": "user",
-        "content": $prompt
-      }
-    ],
-    "max_tokens": 100,
-    "temperature": 0.999,
-    "top_p": 1,
-    "frequency_penalty": 0.0,
-    "presence_penalty": 0.0
+    "prompt": $prompt
   }'
 
   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" --arg api_model "$API_MODEL" "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/chat/completions" \
+                  -X POST "$API_BASE_URL/generate" \
                   -H "Content-Type: application/json" \
-                  -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
   # Extract and display the answer
-  EMOJI=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+  EMOJI=$(echo $RESPONSE | jq -r '.response')
 
   PREFIX="###"
 
-  # check if GITPMOJI_PREFIX_RX is set
-  GITPMOJI_PREFIX_RX=$GITPMOJI_PREFIX_RX
-  if [ -z "$GITPMOJI_PREFIX_RX" ]; then
+  # check if GITKOBEMOJI_PREFIX_RX is set
+  GITKOBEMOJI_PREFIX_RX=$GITKOBEMOJI_PREFIX_RX
+  if [ -z "$GITKOBEMOJI_PREFIX_RX" ]; then
       PREFIX="###"
   else
-      PREFIX=$GITPMOJI_PREFIX_RX
+      PREFIX=$GITKOBEMOJI_PREFIX_RX
   fi
 
   RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
@@ -377,34 +340,19 @@ assess_diff() {
 
   JSON='{
     "model": $api_model,
-    "messages": [
-      {
-        "role": "system",
-        "content": $system_prompt
-      },
-      {
-        "role": "user",
-        "content": $prompt
-      }
-    ],
-    "max_tokens": 500,
-    "temperature": 1,
-    "top_p": 1,
-    "frequency_penalty": 0.0,
-    "presence_penalty": 0.0
+    "prompt": $prompt
   }'
 
    DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/chat/completions" \
+                  -X POST "$API_BASE_URL/generate" \
                   -H "Content-Type: application/json" \
-                  -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
   # Extract and display the answer
   # echo $RESPONSE
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.response')
   
   if [ -z "$RESULT" ]; then
     RESULT=$(echo -e "${GPT_MESSAGE}")
