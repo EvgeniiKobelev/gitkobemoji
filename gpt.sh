@@ -161,6 +161,7 @@ generate_message() {
   Your answer should contain only single commit message, nothing else.
   Use english language only.
   Use a maximum of 100 words in the response.
+  Limit the first sentence (up to the first period) to 60 characters.
   Add a line break after the first sentence (after the first period).
   Limit the first line to 72 characters for better readability.
   Do not add any extra newlines or spaces at the beginning or end of the message.
