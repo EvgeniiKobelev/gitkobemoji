@@ -74,11 +74,11 @@ GITKOBEMOJI_API_MODEL="llama3.1"
 
 - поместите `prepare-commit-msg`, `gpt.sh` и `.gitkobemoji.env` в `.git/hooks/`
 
-## Usage
+## Использование
 
 Просто пишите свои сообщения коммитов как обычно. GITKOBEMOJI автоматически добавит соответствующие эмодзи к вашим коммитам.
 
-## Examples
+## Примеры
 
 Check out the [commit messages](https://github.com/EvgeniiKobelev/gitkobemoji/commits/main/) in this repo
 
