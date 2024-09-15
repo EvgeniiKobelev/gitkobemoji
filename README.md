@@ -80,7 +80,7 @@ GITKOBEMOJI_API_MODEL="llama3.1"
 
 ## Примеры
 
-Check out the [commit messages](https://github.com/EvgeniiKobelev/gitkobemoji/commits/main/) in this repo
+Посмотрите [сообщения коммитов](https://github.com/EvgeniiKobelev/gitkobemoji/commits/main/) в этом репозитории
 
 ## Установка и запуск Ollama 3.1 на локальном компьютере
 
