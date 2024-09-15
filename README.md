@@ -65,8 +65,8 @@ GITKOBEMOJI_API_MODEL="llama3.1"
 ```
 
 > ❗ Обратите внимание: 
-> - GITKOBEMOJI_API_BASE_URL is optional and defaults to http://localhost:11434/api
-> - GITKOBEMOJI_API_MODEL is optional and defaults to llama3.1
+> - GITKOBEMOJI_API_BASE_URL является необязательным и по умолчанию установлен на http://localhost:11434/api
+> - GITKOBEMOJI_API_MODEL является необязательным и по умолчанию установлен на llama3.1
 
 - убедитесь, что файлы `prepare-commit-msg.sh` и `gpt.sh` имеют права на выполнение
 
