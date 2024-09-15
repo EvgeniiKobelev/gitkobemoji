@@ -199,7 +199,27 @@ ${GPT_MESSAGE}"
   fi
   
   # Форматирование сообщения
-  RESULT=$(echo "${MESSAGE}" | sed -e 's/\. /.\n/g' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '{if (length($0) > 72 && NR > 1) {print substr($0, 1, 72) "\n" substr($0, 73)} else {print}}')
+  RESULT=$(echo "${MESSAGE}" | sed -e 's/\. /.\n/g' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
+    BEGIN { line_length = 0; max_length = 72 }
+    {
+      for (i = 1; i <= NF; i++) {
+        word_length = length($i)
+        if (line_length + word_length + 1 > max_length && NR > 1) {
+          print ""
+          line_length = 0
+        }
+        if (line_length > 0) {
+          printf " "
+          line_length++
+        }
+        printf "%s", $i
+        line_length += word_length
+      }
+      if (NR == 1) print ""
+      else printf "\n"
+      line_length = 0
+    }
+  ')
 }
 
 generate_emoji() {
