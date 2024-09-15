@@ -160,9 +160,9 @@ generate_message() {
   You will provide only one commit message for each diff.
   Your answer should contain only single commit message, nothing else.
   Use english language only.
-  Use multiple lines for the response.
-  Try to use maximum 100 words in the response.
-  Limit each line to a maximum of 72 characters for better readability.
+  Use a maximum of 100 words in the response.
+  Add a line break after the first sentence (after the first period).
+  Limit the first line to 72 characters for better readability.
   "
 
   PREFIX_RX="\"" 
@@ -191,9 +191,9 @@ generate_message() {
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
   if [ -z "$MESSAGE" ]; then
-    MESSAGE=$(echo -e "${GPT_MESSAGE}")
+    MESSAGE=$(echo -e "${GPT_MESSAGE}" | sed 's/\. /.\n/')
   else
-    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}")
+    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}" | sed 's/\. /.\n/')
   fi
   RESULT=$(echo -e "${MESSAGE}")
 }
