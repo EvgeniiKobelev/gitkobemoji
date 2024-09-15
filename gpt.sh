@@ -200,7 +200,7 @@ ${GPT_MESSAGE}"
   fi
   
   # Форматирование сообщения
-  RESULT=$(echo "${MESSAGE}" | sed -e 's/\. /.\n/g' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
+  RESULT=$(echo "${MESSAGE}" | sed -e 's/\. /.\n\n/g' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '
     BEGIN { line_length = 0; max_length = 72 }
     {
       for (i = 1; i <= NF; i++) {
