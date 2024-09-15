@@ -197,7 +197,7 @@ ${GPT_MESSAGE}"
   fi
   
 
-RESULT=$(echo "${MESSAGE}" | tr -d '\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | tr -s ' ')
+RESULT=$(echo "${MESSAGE}" | tr -d '\n"' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 }
 
 generate_emoji() {
