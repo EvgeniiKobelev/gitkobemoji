@@ -35,8 +35,8 @@ cd $GITKOBEMOJI_INSTALL_DIR
 pwd
 
 #download from github
-curl -o prepare-commit-msg.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/prepare-commit-msg.sh
-curl -o gpt.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/gpt.sh
+curl -o prepare-commit-msg.sh https://raw.githubusercontent.com/EvgeniiKobelev/gitkobemoji/main/prepare-commit-msg.sh
+curl -o gpt.sh https://raw.githubusercontent.com/EvgeniiKobelev/gitkobemoji/main/gpt.sh
 
 #make executable
 chmod +x prepare-commit-msg.sh

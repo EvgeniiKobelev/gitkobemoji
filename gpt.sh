@@ -168,20 +168,26 @@ generate_message() {
 
   JSON='{
     "model": $api_model,
-    "prompt": $prompt
+    "messages": [
+      {"role": "system", "content": $system_prompt},
+      {"role": "user", "content": $prompt}
+    ]
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
+  DATA=$(jq -n \
+    --arg system_prompt "$SYSTEM_PROMPT" \
+    --arg prompt "$DIFF_CONTENT" \
+    --arg api_model "$API_MODEL" \
+    "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/generate" \
+                  -X POST "$API_BASE_URL/chat" \
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
   # Extract and display the answer
-  # echo $RESPONSE
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.response')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
   if [ -z "$MESSAGE" ]; then
     MESSAGE=$(echo -e "${GPT_MESSAGE}")
@@ -273,19 +279,26 @@ generate_emoji() {
 
   JSON='{
     "model": $api_model,
-    "prompt": $prompt
+    "messages": [
+      {"role": "system", "content": $system_prompt},
+      {"role": "user", "content": $prompt}
+    ]
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" --arg api_model "$API_MODEL" "$JSON")
+  DATA=$(jq -n \
+    --arg system_prompt "$SYSTEM_PROMPT" \
+    --arg prompt "$MESSAGE" \
+    --arg api_model "$API_MODEL" \
+    "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/generate" \
+                  -X POST "$API_BASE_URL/chat" \
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
   # Extract and display the answer
-  EMOJI=$(echo $RESPONSE | jq -r '.response')
+  EMOJI=$(echo $RESPONSE | jq -r '.message.content')
 
   PREFIX="###"
 
@@ -340,19 +353,26 @@ assess_diff() {
 
   JSON='{
     "model": $api_model,
-    "prompt": $prompt
+    "messages": [
+      {"role": "system", "content": $system_prompt},
+      {"role": "user", "content": $prompt}
+    ]
   }'
 
-   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
+  DATA=$(jq -n \
+    --arg system_prompt "$SYSTEM_PROMPT" \
+    --arg prompt "$DIFF_CONTENT" \
+    --arg api_model "$API_MODEL" \
+    "$JSON")
+
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "$API_BASE_URL/generate" \
+                  -X POST "$API_BASE_URL/chat" \
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
   # Extract and display the answer
-  # echo $RESPONSE
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.response')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
   
   if [ -z "$RESULT" ]; then
     RESULT=$(echo -e "${GPT_MESSAGE}")
