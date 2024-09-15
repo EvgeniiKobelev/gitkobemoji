@@ -162,6 +162,7 @@ generate_message() {
   Use english language only.
   Use multiple lines for the response.
   Try to use maximum 100 words in the response.
+  Limit each line to a maximum of 72 characters for better readability.
   "
 
   PREFIX_RX="\"" 
@@ -329,6 +330,7 @@ assess_diff() {
   Use english language for the response only.
   Use multiple lines for the response.
   Try to use maximum 250 words in the response.
+  Limit each line to a maximum of 72 characters for better readability.
   Add the final rating on the scale from 1 to 10 at the end of the response.
   Use 10 emoji ⭐ and 💩 to indicate the rating.
   For example: ⭐⭐⭐⭐⭐⭐⭐💩💩💩 means 7 out of 10 and ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ means 10 out of 10.
