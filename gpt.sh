@@ -160,8 +160,8 @@ generate_message() {
   You will provide only one commit message for each diff.
   Your answer should contain only single commit message, nothing else.
   Use english language only.
-  Use a maximum of 72 characters in the response.
-  Do not add any extra newlines or spaces at the beginning or end of the message.
+  Use multiple lines for the response.
+  Try to use maximum 100 words in the response.
   "
 
   PREFIX_RX="\"" 
@@ -187,17 +187,14 @@ generate_message() {
                   -d "$DATA")
 
   # Extract and process the answer
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n' | sed -e 's/[[:space:]]\+/ /g' -e 's/^ *//' -e 's/ *$//')
-  
-  if [ -z "$MESSAGE" ]; then
-    MESSAGE="${GPT_MESSAGE}"
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | sed 's/^"//;s/"$//')
+    
+    if [ -z "$MESSAGE" ]; then
+    MESSAGE=$(echo -e "${GPT_MESSAGE}")
   else
-    MESSAGE="${MESSAGE}
-${GPT_MESSAGE}"
+    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}")
   fi
-  
-
-RESULT=$(echo "${MESSAGE}" | tr -d '\n"' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  RESULT=$(echo -e "${MESSAGE}")
 }
 
 generate_emoji() {
