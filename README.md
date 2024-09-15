@@ -44,27 +44,27 @@ curl -o install.sh https://raw.githubusercontent.com/EvgeniiKobelev/gitkobemoji/
 ```
 и следуйте инструкциям.
 
-## Setup manually
+## Установка вручную
 
-- install jq
+- Установите jq
 ```
 brew install jq
 ```
-or
+или
 ```
 apt-get install jq
 ```
 
-- download `prepare-commit-msg.sh` and `gpt.sh`
+- Скачайте `prepare-commit-msg.sh` и `gpt.sh`
 
-- Add environment variables to your `.env` file or create `.gitkobemoji.env` file:
+- Добавьте переменные окружения в файл `.env` или создайте файл `.gitkobemoji.env`:
 
 ```
 GITKOBEMOJI_API_BASE_URL="http://localhost:11434/api"
 GITKOBEMOJI_API_MODEL="llama3.1"
 ```
 
-> ❗ Note: 
+> ❗ Обратите внимание: 
 > - GITKOBEMOJI_API_BASE_URL is optional and defaults to http://localhost:11434/api
 > - GITKOBEMOJI_API_MODEL is optional and defaults to llama3.1
 
