@@ -187,7 +187,7 @@ generate_message() {
                   -d "$DATA")
 
   # Extract and process the answer
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | sed 's/^"//;s/"$//')
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | sed 's/^"//;s/"$//' | tr -d '\n' | sed 's/\. /.\n\n/')
     
     if [ -z "$MESSAGE" ]; then
     MESSAGE=$(echo -e "${GPT_MESSAGE}")
