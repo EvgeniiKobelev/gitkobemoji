@@ -188,8 +188,8 @@ generate_message() {
                   -H "Content-Type: application/json" \
                   -d "$DATA")
 
-  # Extract and display the answer
-  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content')
+  # Extract and process the answer
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.message.content' | tr -d '\n' | sed -e 's/[[:space:]]\+/ /g' -e 's/^ *//' -e 's/ *$//')
   
   if [ -z "$MESSAGE" ]; then
     MESSAGE="${GPT_MESSAGE}"
@@ -198,15 +198,8 @@ generate_message() {
 ${GPT_MESSAGE}"
   fi
   
-  # Обработка сообщения
-  RESULT=$(echo "${MESSAGE}" | awk '{
-    if (NR==1) {
-      printf "%s\n", $0
-    } else {
-      printf "%s", $0
-      if (NR % 2 == 0) printf "\n"
-    }
-  }' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d')
+  # Форматирование сообщения
+  RESULT=$(echo "${MESSAGE}" | sed -e 's/\. /.\n/g' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/d' | awk '{if (length($0) > 72 && NR > 1) {print substr($0, 1, 72) "\n" substr($0, 73)} else {print}}')
 }
 
 generate_emoji() {
